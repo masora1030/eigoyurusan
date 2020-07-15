@@ -1,0 +1,89 @@
+Metadata-Version: 2.1
+Name: eigoyurusan
+Version: 0.1.2
+Summary: English is too difficult for me.
+Home-page: https://github.com/masora1030/eigoyurusan
+Author: Sora Takashima
+Author-email: soraemonpockt@gmail.com
+License: MIT license
+Project-URL: Projects, https://github.com/users/masora1030/projects/1
+Project-URL: Source, https://github.com/masora1030/eigoyurusan
+Description: # eigoyurusan
+        
+        English is too difficult for me.
+        
+        Free software: MIT license
+        
+        ## Installation
+        
+        ### Stable release
+        
+        To install eigoyurusan, run this command in your terminal:
+        
+        ```
+        $ pip install eigoyurusan
+        ```
+        
+        This is the preferred method to install eigoyurusan, as it will always install the most recent stable release.
+        
+        If you don't have [pip](https://pip.pypa.io) installed, this Python [installation guide](http://docs.python-guide.org/en/latest/starting/installation/) can guide
+        you through the process.
+        
+        ### From sources
+        
+        The sources for eigoyurusan can be downloaded from my [Github repo](https://github.com/masora1030/eigoyurusan)
+        
+        You can either clone the public repository:
+        
+        ```
+        $ git clone git://github.com/masora1030/eigoyurusan
+        ```
+        
+        Once you have a copy of the source, you can install it with:
+        
+        ```
+        $ python setup.py install
+        ```
+        
+        ## Usage
+        
+        Please type a command like follow:
+        
+        ```
+        $ eigoyurusan -u https://arxiv.org/abs/XXXXXXXX
+        ```
+        
+        If you want to translate to a language except Japanese, type a command like follows:
+        
+        ```
+        $ eigoyurusan -u https://arxiv.org/abs/XXXXXXXX -l RU
+        ```
+        
+        -l option sets a language. The details about the correspondence is as follows.
+        
+         - 'RU' : Russian
+         - 'PL' : Polish
+         - 'NL' : Dutch
+         - 'IT' : Italian
+         - 'PT' : Portuguese
+         - 'ES' : Spanish
+         - 'FR' : French
+         - 'DE' : German
+        
+        
+        Use --small option, a quick, but not complete, summary is output on the command prompt:
+        
+        ```
+        $ eigoyurusan -u https://arxiv.org/abs/XXXXXXXX --small
+        ```
+        
+        
+Keywords: eigoyurusan,translate,translator,paper,PDF
+Platform: UNKNOWN
+Classifier: Intended Audience :: Education
+Classifier: Topic :: Text Processing :: Linguistic
+Classifier: Development Status :: 3 - Alpha
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: MacOS
+Description-Content-Type: text/markdown

@@ -1,0 +1,6 @@
+Click>=7.0
+setuptools
+pdfminer
+selenium
+arxiv
+markdown
