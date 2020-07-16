@@ -17,7 +17,7 @@ requirements = ['Click>=7.0',
 
 setuptools.setup(
     name="eigoyurusan",
-    version="0.1.3",
+    version="0.1.5",
     author="Sora Takashima",
     author_email="soraemonpockt@gmail.com",
     description="English is too difficult for me.",
@@ -25,6 +25,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/masora1030/eigoyurusan",
     packages=setuptools.find_packages(),
+    include_package_data=True,
     classifiers=[
         "Intended Audience :: Education",
         "Topic :: Text Processing :: Linguistic",
