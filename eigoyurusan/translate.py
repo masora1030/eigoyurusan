@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.options import Options
 from time import sleep
 
 now_path = os.path.dirname(os.path.abspath(__file__))
-driver_url = {'linux':now_path + '/chromedriver_Linux',
+driver_url = {'linux':now_path + '/linux/chromedriver',
               'mac':now_path + '/chromedriver',
               'win64':now_path + '/chromedriver.exe',
               'win32':now_path + '/chromedriver.exe'}

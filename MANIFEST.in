@@ -1,3 +1,4 @@
 include LICENSE
 include *.md
 include eigoyurusan/chromedriver*
+include eigoyurusan/linux/chromedriver

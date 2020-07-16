@@ -17,7 +17,7 @@ requirements = ['Click>=7.0',
 
 setuptools.setup(
     name="eigoyurusan",
-    version="0.1.5",
+    version="0.1.7",
     author="Sora Takashima",
     author_email="soraemonpockt@gmail.com",
     description="English is too difficult for me.",
