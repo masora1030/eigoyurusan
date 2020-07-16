@@ -10,6 +10,7 @@ import re
 import urllib.request
 import os
 
+
 import eigoyurusan.translate as tr
 import eigoyurusan.PDFparser as pr
 

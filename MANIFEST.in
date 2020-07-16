@@ -1,0 +1,6 @@
+include LICENSE
+include *.md
+recursive-include eigoyurusan chromedriver
+recursive-include eigoyurusan chromedriver.exe
+recursive-include eigoyurusan chromedriver_Linux
+exclude README.md
