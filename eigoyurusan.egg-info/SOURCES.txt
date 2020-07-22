@@ -1,8 +1,13 @@
+LICENSE
+MANIFEST.in
 README.md
 setup.py
 eigoyurusan/PDFparser.py
 eigoyurusan/__init__.py
+eigoyurusan/chromedriver
+eigoyurusan/chromedriver.exe
 eigoyurusan/eigoyurusan.py
+eigoyurusan/eigoyurusan_PDF.py
 eigoyurusan/translate.py
 eigoyurusan.egg-info/PKG-INFO
 eigoyurusan.egg-info/SOURCES.txt
@@ -10,3 +15,4 @@ eigoyurusan.egg-info/dependency_links.txt
 eigoyurusan.egg-info/entry_points.txt
 eigoyurusan.egg-info/requires.txt
 eigoyurusan.egg-info/top_level.txt
+eigoyurusan/linux/chromedriver

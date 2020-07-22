@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: eigoyurusan
-Version: 0.1.2
+Version: 0.1.8
 Summary: English is too difficult for me.
 Home-page: https://github.com/masora1030/eigoyurusan
 Author: Sora Takashima
@@ -47,10 +47,16 @@ Description: # eigoyurusan
         
         ## Usage
         
-        Please type a command like follow:
+        If you want to translate arXiv paper (you know it's link), please type a command like follow:
         
         ```
         $ eigoyurusan -u https://arxiv.org/abs/XXXXXXXX
+        ```
+        
+        Other, If you want to translate your PDF file, please type a command like follow:
+        
+        ```
+        $ eigoyurusan -p hoge.pdf
         ```
         
         If you want to translate to a language except Japanese, type a command like follows:

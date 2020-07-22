@@ -37,10 +37,16 @@ $ python setup.py install
 
 ## Usage
 
-Please type a command like follow:
+If you want to translate arXiv paper (you know it's link), please type a command like follow:
 
 ```
 $ eigoyurusan -u https://arxiv.org/abs/XXXXXXXX
+```
+
+Other, If you want to translate your PDF file, please type a command like follow:
+
+```
+$ eigoyurusan -p hoge.pdf
 ```
 
 If you want to translate to a language except Japanese, type a command like follows:
