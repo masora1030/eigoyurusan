@@ -29,19 +29,12 @@ def translate(path, small, lang):
             self.title = title
             self.body = ''
             self.pagenum = pagenum
-            return
-
-        def getTitle(self):
-            return self.title
 
         def getPagenum(self):
             return self.pagenum
 
         def addBody(self, text):
-            self.body = ''.join([self.body, text])
-
-        def getBody(self):
-            return self.body
+            self.body += text
 
     # Layout Analysisのパラメーターを設定。縦書きの検出を有効にする。
     laparams = LAParams(detect_vertical=True)
@@ -55,8 +48,8 @@ def translate(path, small, lang):
     # Interpreterオブジェクトを作成。
     interpreter = PDFPageInterpreter(resource_manager, device)
 
-    Chapters = []
-    nowC = Chapter('metadata', 1)
+    Chapters = [Chapter('metadata', 1)]
+    nowC = Chapters[-1]
 
     print()
     # print('-' * 30)  # 読みやすいよう区切り線を表示する。
@@ -76,50 +69,37 @@ def translate(path, small, lang):
             # y1（Y座標の値）は上に行くほど大きくなるので、正負を反転させている。
             # boxes.sort(key=lambda b: (b.x0, -b.y1))
 
-            emp = " "
-            piriod = ". "
-            chainp = ".. "
-
             for box in boxes:
-
                 pdf_text = box.get_text()
-
-                # 整形処理
-                # 単語の途中で改行対処(普通の単語に直す)
-                pdf_text = pdf_text.replace("-\n", "")
-                # 単語の間や文末に改行消去
-                pdf_text = pdf_text.replace("\n", " ")
-                # figのピリオド対処
+                #################### 整形処理 ####################
+                pdf_text = pdf_text.replace("-\n", "") # remove hyphenation
+                pdf_text = pdf_text.replace("\n", " ") # remove newliner
                 pdf_text = pdf_text.replace("fig.", "fig").replace("Fig.", "Fig")
                 # 3以上の長さのスペース入り連続ピリオドを圧縮
                 for i in range(3, 7):
-                    pdf_text = pdf_text.replace(piriod * i, "...")
-                pdf_text = pdf_text.replace(chainp, "..")
+                    pdf_text = pdf_text.replace(". " * i, "...")
+                pdf_text = pdf_text.replace(".. ", "..")
                 # タイトルっぽいやつのピリオドスペースは消しとく
-                if nowC.getTitle() != 'References' and nowC.getTitle() != 'REFERENCES':
+                if nowC.title not in ['References','REFERENCES']:
                     for i in range(1, 10):
                         pdf_text = re.sub('{}\. '.format(i), '{} '.format(i), pdf_text)
                 # ピリオドスペースで改行
                 pdf_text = pdf_text.replace(". ", ".\n")
                 # どんな長さのスペースも１つのスペースに
                 for i in range(1, 7):
-                    pdf_text = pdf_text.replace(emp * i, " ")
+                    pdf_text = pdf_text.replace(" " * i, " ")
+                ##################################################
 
-                if re.findall(
-                        '^§?[A-Z]\.? [^\+−≤≥<>∧∨=＝∈×;∇/:]+$|^§?[A-Z]\.[1-9]+\.? [^\+−≤≥<>∧∨=＝∈×;∇/:]+$|^§?[A-Z]\.[1-9]\.[1-9]+\.? [^\+−≤≥<>∧∨=＝∈×;∇/:]+$|^§?[1-9]+ [^\+−≤≥<>∧∨=＝∈×;∇/:]+$|^§?[1-9]+\.[1-9]+ [^\+−≤≥<>∧∨=＝∈×;∇/:]+$|^§?[1-9]+\.[1-9]+\.[1-9]+ [^\+−≤≥<>∧∨=＝∈×;∇/:]+$|^Abstract*|^ABSTRACT*|^Acknowledgements*|^Acknowledgments*|^ACKNOWLEDGMENTS*|^References*|^REFERENCES*|^Introduction*|^INTRODUCTION*',
-                        pdf_text) and len(pdf_text) > 8:
+                # extract plane sentences
+                regix_extract_plane_english = '^§?[A-Z]\.? [^\+−≤≥<>∧∨=＝∈×;∇/:]+$|^§?[A-Z]\.[1-9]+\.? [^\+−≤≥<>∧∨=＝∈×;∇/:]+$|^§?[A-Z]\.[1-9]\.[1-9]+\.? [^\+−≤≥<>∧∨=＝∈×;∇/:]+$|^§?[1-9]+ [^\+−≤≥<>∧∨=＝∈×;∇/:]+$|^§?[1-9]+\.[1-9]+ [^\+−≤≥<>∧∨=＝∈×;∇/:]+$|^§?[1-9]+\.[1-9]+\.[1-9]+ [^\+−≤≥<>∧∨=＝∈×;∇/:]+$|^Abstract*|^ABSTRACT*|^Acknowledgements*|^Acknowledgments*|^ACKNOWLEDGMENTS*|^References*|^REFERENCES*|^Introduction*|^INTRODUCTION*'
+                if re.findall(regix_extract_plane_english, pdf_text) and len(pdf_text) > 8:
                     # Subtitleの処理
-                    # print(pdf_text)
+                    nowC = Chapter(re.findall(regix_extract_plane_english, pdf_text)[0], page_num + 1)
                     Chapters.append(nowC)
-                    nowC = Chapter(re.findall(
-                        '^§?[A-Z]\.? [^\+−≤≥<>∧∨=＝∈×;∇/:]+$|^§?[A-Z]\.[1-9]+\.? [^\+−≤≥<>∧∨=＝∈×;∇/:]+$|^§?[A-Z]\.[1-9]\.[1-9]+\.? [^\+−≤≥<>∧∨=＝∈×;∇/:]+$|^§?[1-9]+ [^\+−≤≥<>∧∨=＝∈×;∇/:]+$|^§?[1-9]+\.[1-9]+ [^\+−≤≥<>∧∨=＝∈×;∇/:]+$|^§?[1-9]+\.[1-9]+\.[1-9]+ [^\+−≤≥<>∧∨=＝∈×;∇/:]+$|^Abstract*|^ABSTRACT*|^Acknowledgements*|^Acknowledgments*|^ACKNOWLEDGMENTS*|^References*|^REFERENCES*|^Introduction*|^INTRODUCTION*',
-                        pdf_text)[0], page_num + 1)
-                elif re.findall('^arXiv:*',
-                                pdf_text) and nowC.getTitle() != 'References' and nowC.getTitle() != 'REFERENCES' and nowC.getTitle() != 'References ':
-                    # arxiv_infoの処理
-                    arxiv_info = re.findall('^arXiv:*', pdf_text)
+                elif re.findall('^arXiv:*', pdf_text) and nowC.title not in ['References','References ','REFERENCES']:
+                    arxiv_info = re.findall('^arXiv:*', pdf_text) # arxiv_infoの処理
                 else:
-                    if re.findall('^References*|^REFERENCES*', nowC.getTitle()):
+                    if re.findall('^References*|^REFERENCES*', nowC.title):
                         # 参考文献の処理
                         pdf_text = pdf_text.replace("\n", " ")
                         # .で終わってたら改行する
@@ -130,57 +110,32 @@ def translate(path, small, lang):
                             # 短すぎるやつは多分数式とかなので改行を消す
                             pdf_text.replace("\n", " ")
                     nowC.addBody(pdf_text)
-    Chapters.append(nowC)
+
+    ### 3000文字程度毎に分割する
+    def split_by_charcount(textlist, count):
+        ret = ""
+        while len(textlist):
+            pop = textlist.pop(0) + "\n"
+            if len(ret+pop) > count:
+                yield ret
+                ret = ""
+            ret += pop
+        return ret
 
     # 概要と導入と結論だけ早めに出しちゃう
-    translated_text_conclusion = ''
-    translated_text_introduction = ''
-    translated_text_abstract = ''
+    rets = {"結論":"", "導入":"", "概要":""}
     for c in Chapters:
-        if re.findall('Conclusion*|CONCLUSION*', c.getTitle()):
-            print('-' * 30)  # 読みやすいよう区切り線を表示する。
-            print('[結論]')
-            transtext = ""
+        subtitle = ""
+        if re.findall('Conclusion*|CONCLUSION*', c.title): subtitle="結論"
+        elif re.findall('Introduction*|INTRODUCTION*', c.title): subtitle="導入"
+        elif re.findall('Abstract*|ABSTRACT*', c.title): subtitle="概要"
 
-            transtext_list = c.getBody().split(sep='\n')
-            ind = 0
-            while ind < len(transtext_list):
-                while ind < len(transtext_list) and len(transtext) < 3000:
-                    transtext = ''.join([transtext, transtext_list[ind], '\n'])
-                    ind += 1
-                translated_text_conclusion = ''.join([translated_text_conclusion, tr.traslateBydeepL(transtext, lang)])
-                transtext = ''
-            print(translated_text_conclusion)
-        elif re.findall('Introduction*|INTRODUCTION*', c.getTitle()):
+        if subtitle:
             print('-' * 30)  # 読みやすいよう区切り線を表示する。
-            print('[導入]')
-            transtext = ""
-
-            transtext_list = c.getBody().split(sep='\n')
-            ind = 0
-            while ind < len(transtext_list):
-                while ind < len(transtext_list) and len(transtext) < 3000:
-                    transtext = ''.join([transtext, transtext_list[ind], '\n'])
-                    ind += 1
-                translated_text_introduction = ''.join(
-                    [translated_text_introduction, tr.traslateBydeepL(transtext, lang)])
-                transtext = ''
-            print(translated_text_introduction)
-        elif re.findall('Abstract*|ABSTRACT*', c.getTitle()):
-            print('-' * 30)  # 読みやすいよう区切り線を表示する。
-            print('[概要]')
-            transtext = ""
-
-            transtext_list = c.getBody().split(sep='\n')
-            ind = 0
-            while ind < len(transtext_list):
-                while ind < len(transtext_list) and len(transtext) < 3000:
-                    transtext = ''.join([transtext, transtext_list[ind], '\n'])
-                    ind += 1
-                translated_text_abstract = ''.join(
-                    [translated_text_abstract, tr.traslateBydeepL(transtext, lang)])
-                transtext = ''
-            print(translated_text_abstract)
+            print(f'[{subtitle}]')
+            for texts in split_by_charcount(c.body.split('\n'), 3000):
+                rets[subtitle] += tr.traslateBydeepL(texts, lang)
+            print(rets[subtitle])
 
     # smallだったらここで打ち切り
     if small:
@@ -190,35 +145,30 @@ def translate(path, small, lang):
 
     # 本文翻訳
     print('-' * 30)  # 読みやすいよう区切り線を表示する。
-    Chapters_JP = []
-    nowC = Chapter('Abstract', 1)
+    Chapters_JP = [Chapter('Abstract', 1)]
+    nowC = Chapters_JP[-1]
 
     for c in Chapters:
-        nowC = Chapter(tr.traslateBydeepL(c.getTitle(), lang), c.getPagenum())
+        nowC = Chapter(tr.traslateBydeepL(c.title, lang), c.getPagenum())
+        Chapters_JP.append(nowC)
+
         transtext = ""
         translated_text = ""
 
-        transtext_list = c.getBody().split(sep='\n')
+        transtext_list = c.body.split(sep='\n')
         ind = 0
-        if c.getTitle() != 'References' and c.getTitle() != 'REFERENCES':
-            if re.findall('Conclusion*|CONCLUSION*', c.getTitle()):
-                nowC.addBody(translated_text_conclusion)
-            elif re.findall('Introduction*|INTRODUCTION*', c.getTitle()):
-                nowC.addBody(translated_text_introduction)
-            elif re.findall('Abstract*|ABSTRACT*', c.getTitle()):
-                nowC.addBody(translated_text_abstract)
+        if c.title not in ['References','REFERENCES']:
+            if re.findall('Conclusion*|CONCLUSION*', c.title): nowC.addBody(rets["結論"])
+            elif re.findall('Introduction*|INTRODUCTION*', c.title): nowC.addBody(rets["導入"])
+            elif re.findall('Abstract*|ABSTRACT*', c.title): nowC.addBody(rets["概要"])
             else:
-                while ind < len(transtext_list):
-                    while ind < len(transtext_list) and len(transtext) < 3000:
-                        transtext = ''.join([transtext, transtext_list[ind], '\n'])
-                        ind += 1
-                    translated_text = ''.join([translated_text, tr.traslateBydeepL(transtext, lang)])
-                    transtext = ''
-                nowC.addBody(translated_text)
+                ret = ""
+                for texts in split_by_charcount(c.body.split('\n'), 3000):
+                    ret += tr.traslateBydeepL(texts, lang)
+                nowC.addBody(ret)
         else:
-            nowC.addBody(c.getBody())
-        Chapters_JP.append(nowC)
-        print('Done Translating : Chapter {}'.format(c.getTitle()))
+            nowC.addBody(c.body)
+        print('Done Translating : Chapter {}'.format(c.title))
     print('-' * 30)  # 読みやすいよう区切り線を表示する。
 
     # 出力作業
